@@ -40,6 +40,8 @@
 #include "OMPlot.h"
 #include "Visualizer.h"
 #include "VisualizerMAT.h"
+#include "VisualizerFMU.h"
+#include "InputData.h"
 
 #include <iostream>
 #include <string>
@@ -69,6 +71,7 @@ public:
   double getVisTime();
   void setPathName(std::string name);
   void setFileName(std::string name);
+  void openFMUSettingsDialog();
 public slots:
   void sliderSetTimeSlotFunction(int value);
   void playSlotFunction();

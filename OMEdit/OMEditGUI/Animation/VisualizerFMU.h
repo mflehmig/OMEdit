@@ -68,7 +68,7 @@ class VisualizerFMU : public VisualizerAbstract
   void updateVisAttributes(const double time) override;
   void updateScene(const double time = 0.0) override;
   void updateObjectAttributeFMU(ShapeObjectAttribute* attr, fmi1_import_t* fmu);
-
+  std::shared_ptr<InputData> getInputData();
  private:
   std::shared_ptr<FMUWrapper> _fmu;
   std::shared_ptr<SimSettingsFMU> _simSettings;

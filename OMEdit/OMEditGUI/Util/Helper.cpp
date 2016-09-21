@@ -55,6 +55,7 @@ QString Helper::xmlFileTypes = "XML Files (*.xml)";
 QString Helper::infoXmlFileTypes = "OM Info Files (*_info.json)";
 QString Helper::matFileTypes = "MAT Files (*.mat)";
 QString Helper::omResultFileTypes = "OpenModelica Result Files (*.mat *.plt *.csv)";
+QString Helper::visualizationFileTypes = "Visualization MAT(*.mat);;Visualization FMU(*.fmu)";
 #ifdef WIN32
 QString Helper::exeFileTypes = "EXE Files (*.exe)";
 #else

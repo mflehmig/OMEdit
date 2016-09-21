@@ -61,6 +61,7 @@ public:
   static QString imageFileTypes;
   static QString bitmapFileTypes;
   static QString fmuFileTypes;
+  static QString visualizationFileTypes;
   static QString xmlFileTypes;
   static QString infoXmlFileTypes;
   static QString matFileTypes;

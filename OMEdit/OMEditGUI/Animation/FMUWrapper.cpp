@@ -147,13 +147,15 @@ void FMUWrapper::load(const std::string& modelFile, const std::string& path)
   _callBackFunctions.allocateMemory = calloc;
   _callBackFunctions.freeMemory = free;
 
-  //#ifdef FMILIB_GENERATE_BUILD_STAMP
-  //  //printf("Library build stamp:\n%s\n", fmilib_get_build_stamp());
-  // std::cout << "Library build stamp: \n" << fmilib_get_build_stamp() << std::endl;
-  //#endif
+  #ifdef FMILIB_GENERATE_BUILD_STAMP
+    //printf("Library build stamp:\n%s\n", fmilib_get_build_stamp());
+   std::cout << "Library build stamp: \n" << fmilib_get_build_stamp() << std::endl;
+  #endif
+
   _context = std::shared_ptr<fmi_import_context_t>(fmi_import_allocate_context(&_callbacks), fmi_import_free_context);
 
   // If the FMU is already extracted, we remove the shared object file.
+  /*
   std::string sharedObjectFile(fmi_import_get_dll_path(path.c_str(), modelFile.c_str(), &_callbacks));
   if (fileExists(sharedObjectFile))
   {
@@ -164,15 +166,16 @@ void FMUWrapper::load(const std::string& modelFile, const std::string& path)
   }
   else
     std::cout<<"Shared object file " << sharedObjectFile << std::string(" does not exist.")<<std::endl;
-
+*/
   // Unzip the FMU and pars it.
   // Unzip the FMU only once. Overwriting the dll/so file may cause a segmentation fault.
+
+
   std::string fmuFileName = path + modelFile;
   fmi_version_enu_t version = fmi_import_get_fmi_version(_context.get(), fmuFileName.c_str(), path.c_str());
   if (version != fmi_version_1_enu)
   {
     std::cout<<"Only version 1.0 is supported so far. Exiting."<<std::endl;
-
   }
 
   _fmu = std::shared_ptr<fmi1_import_t>(fmi1_import_parse_xml(_context.get(), path.c_str()), fmi1_import_free);

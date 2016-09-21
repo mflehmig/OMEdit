@@ -39,8 +39,8 @@
 VisualizerFMU::VisualizerFMU(const std::string& modelFile, const std::string& path)
     : VisualizerAbstract(modelFile, path, VisType::FMU),
       _fmu(new FMUWrapper()),
-      _simSettings(new SimSettingsFMU())
-      //_inputData(new InputData())
+      _simSettings(new SimSettingsFMU()),
+      _inputData(new InputData())
       //_joysticks()
 {
   //initJoySticks();
@@ -67,8 +67,8 @@ void VisualizerFMU::loadFMU(const std::string& modelFile, const std::string& pat
   _fmu->initialize(_simSettings);
   std::cout<<"VisualizerFMU::loadFMU: FMU was successfully initialized."<<std::endl;
 
-  //_inputData->initializeInputs(_fmu->getFMU());
-  //_inputData->printValues();
+  _inputData->initializeInputs(_fmu->getFMU());
+  _inputData->printValues();
 
 }
 
@@ -376,4 +376,11 @@ void VisualizerFMU::updateObjectAttributeFMU(ShapeObjectAttribute* attr, fmi1_im
   }
 }
 
-
+/*!
+ * \brief VisualizerFMU::getInputData
+ * returns the _inputData member
+ */
+std::shared_ptr<InputData> VisualizerFMU::getInputData()
+{
+  return _inputData;
+}

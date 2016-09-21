@@ -245,9 +245,15 @@ void AnimationWindow::loadVisualization()
   //init visualizer
   if (visType == VisType::MAT) {
     mpVisualizer = new VisualizerMAT(mFileName, mPathName);
-  } else {
+  }
+  else if (visType == VisType::FMU) {
+    mpVisualizer = new VisualizerFMU(mFileName, mPathName);
+    //openFMUSettingsDialog();
+  }
+  else {
     std::cout<<"could not init "<<mPathName<<mFileName<<std::endl;
   }
+  std::cout<<"CONTINUE"<<std::endl;
   //load the XML File, build osgTree, get initial values for the shapes
   bool xmlExists = checkForXMLFile(mFileName, mPathName);
   if (!xmlExists) {
@@ -270,13 +276,13 @@ void AnimationWindow::loadVisualization()
 void AnimationWindow::chooseAnimationFileSlotFunction()
 {
   std::string file = StringHandler::getOpenFileName(this, QString(Helper::applicationName).append(" - ").append(Helper::chooseFile),
-      NULL, Helper::matFileTypes, NULL).toStdString();
+      NULL, Helper::visualizationFileTypes, NULL).toStdString();
   if (file.compare(""))
   {
     std::size_t pos = file.find_last_of("/\\");
     mPathName = file.substr(0, pos + 1);
     mFileName = file.substr(pos + 1, file.length());
-    //std::cout<<"file "<<mFileName<<"   path "<<mPathName<<std::endl;
+    std::cout<<"file "<<mFileName<<"   path "<<mPathName<<std::endl;
     loadVisualization();
     // start the widgets
     mpAnimationInitializeAction->setEnabled(true);
@@ -500,4 +506,76 @@ void AnimationWindow::setPerspective(int value)
       cameraPositionXZ();
       break;
   }
+}
+
+/*!
+ * \brief AnimationWindow::openFMUSettingsDialog
+ * opens a dialog to set the settings for the FMU visualization
+ */
+void AnimationWindow::openFMUSettingsDialog()
+{
+  //get the inputs for the fmu
+  std::shared_ptr<InputData> inputData= dynamic_cast<VisualizerFMU*>(mpVisualizer)->getInputData();
+  const InputValues* inputs = inputData->getInputValues();
+
+  QDialog *fmuSettingsDialog = new QDialog(this);
+  fmuSettingsDialog->setWindowTitle("FMU settings");
+  fmuSettingsDialog->setWindowIcon(QIcon(":/Resources/icons/animation.png"));
+  //the layouts
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+
+  QHBoxLayout *inputsLayout = new QHBoxLayout;
+  QVBoxLayout *leftInputLayout = new QVBoxLayout;
+  QVBoxLayout *rightInputLayout = new QVBoxLayout;
+
+  QHBoxLayout *simulationLayout = new QHBoxLayout;
+  QVBoxLayout *leftSimLayout = new QVBoxLayout;
+  QVBoxLayout *rightSimLayout = new QVBoxLayout;
+  //the widgets
+  QLabel *inputLabel = new QLabel(tr("Assign the devices for the input variables"));
+  QLabel *simulationLabel = new QLabel(tr("Simulation settings"));
+  QPushButton *okButton = new QPushButton(tr("OK"));
+
+  QLabel* realVarLabelArr[3];
+  QComboBox* realInputComboBoxArr[3];
+  for(int i = 0; i<3;i++)
+  {
+    realVarLabelArr[i] = new QLabel(tr("var1"));
+    realInputComboBoxArr[i] = new QComboBox(fmuSettingsDialog);
+    realInputComboBoxArr[i]->addItem(QString("JOY_1_X"));
+    realInputComboBoxArr[i]->addItem(QString("JOY_1_Y"));
+    realInputComboBoxArr[i]->addItem(QString("JOY_2_X"));
+    realInputComboBoxArr[i]->addItem(QString("JOY_2_Y"));
+    leftInputLayout->addWidget(realVarLabelArr[i]);
+    rightInputLayout->addWidget(realInputComboBoxArr[i]);
+  }
+
+  QLabel *solverLabel = new QLabel(tr("solver"));
+  QComboBox *solverComboBox = new QComboBox(fmuSettingsDialog);
+  solverComboBox->addItem(QString("euler forward"));
+  QLabel *stepsizeLabel = new QLabel(tr("step size"));
+  QTextEdit *stepSizeEdit = new QTextEdit("0.001");
+  stepSizeEdit->setMaximumSize(QSize(48,16));
+
+  //assemble
+  mainLayout->addWidget(inputLabel);
+  mainLayout->addLayout(inputsLayout);
+
+  inputsLayout->addLayout(leftInputLayout);
+  inputsLayout->addLayout(rightInputLayout);
+
+  mainLayout->addWidget(simulationLabel);
+  mainLayout->addLayout(simulationLayout);
+
+  simulationLayout->addLayout(leftSimLayout);
+  simulationLayout->addLayout(rightSimLayout);
+  leftSimLayout->addWidget(solverLabel);
+  rightSimLayout->addWidget(solverComboBox);
+
+  mainLayout->addWidget(okButton);
+  fmuSettingsDialog->setLayout(mainLayout);
+  //connections
+  connect(okButton, SIGNAL(clicked()),fmuSettingsDialog, SLOT(close()));
+
+  fmuSettingsDialog->show();
 }
