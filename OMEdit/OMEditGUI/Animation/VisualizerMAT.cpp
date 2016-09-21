@@ -191,9 +191,10 @@ double VisualizerMAT::omcGetVarValue(ModelicaMatReader* reader, const char* varN
 
     return val;
 }
-
+/*
 void VisualizerMAT::setSimulationSettings(const UserSimSettingsMAT& simSetMAT)
 {
     auto newVal = simSetMAT.speedup * _timeManager->getHVisual();
     _timeManager->setHVisual(newVal);
 }
+*/

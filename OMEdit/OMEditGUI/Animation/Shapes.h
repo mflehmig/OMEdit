@@ -38,7 +38,7 @@
 
 #include "util/read_matlab4.h"
 #include "rapidxml.hpp"
-//#include "fmilib.h"
+#include "fmilib.h"
 #include <osg/Vec3f>
 #include <osg/Matrix>
 #include <osg/Uniform>
@@ -47,41 +47,41 @@
 class ShapeObjectAttribute
 {
  public:
-	ShapeObjectAttribute();
-	ShapeObjectAttribute(float value);
-	~ShapeObjectAttribute() = default;
-	std::string getValueString() const;
+  ShapeObjectAttribute();
+  ShapeObjectAttribute(float value);
+  ~ShapeObjectAttribute() = default;
+  std::string getValueString() const;
  public:
-	bool isConst;
-	float exp;
-	std::string cref;
-	//fmi1_value_reference_t fmuValueRef;
+  bool isConst;
+  float exp;
+  std::string cref;
+  fmi1_value_reference_t fmuValueRef;
 };
 
 class ShapeObject
 {
  public:
-	ShapeObject();
-	~ShapeObject() = default;
-	ShapeObject(const ShapeObject&) = default;
-	ShapeObject& operator=(const ShapeObject&) = default;
-	void dumpVisAttributes() const;
-	//void fetchVisAttributes(rapidxml::xml_node<>* node, ModelicaMatReader matReader,/* fmi1_import_t* fmu,*/ double time, bool useFMU);
+  ShapeObject();
+  ~ShapeObject() = default;
+  ShapeObject(const ShapeObject&) = default;
+  ShapeObject& operator=(const ShapeObject&) = default;
+  void dumpVisAttributes() const;
+  //void fetchVisAttributes(rapidxml::xml_node<>* node, ModelicaMatReader matReader,/* fmi1_import_t* fmu,*/ double time, bool useFMU);
  public:
-	std::string _id;
-	std::string _type;
-	ShapeObjectAttribute _length;
-	ShapeObjectAttribute _width;
-	ShapeObjectAttribute _height;
-	ShapeObjectAttribute _r[3];
-	ShapeObjectAttribute _rShape[3];
-	ShapeObjectAttribute _lDir[3];
-	ShapeObjectAttribute _wDir[3];
-	ShapeObjectAttribute _color[3];
-	ShapeObjectAttribute _T[9];
-	ShapeObjectAttribute _specCoeff;
-	osg::Matrix _mat;
-	ShapeObjectAttribute _extra;
+  std::string _id;
+  std::string _type;
+  ShapeObjectAttribute _length;
+  ShapeObjectAttribute _width;
+  ShapeObjectAttribute _height;
+  ShapeObjectAttribute _r[3];
+  ShapeObjectAttribute _rShape[3];
+  ShapeObjectAttribute _lDir[3];
+  ShapeObjectAttribute _wDir[3];
+  ShapeObjectAttribute _color[3];
+  ShapeObjectAttribute _T[9];
+  ShapeObjectAttribute _specCoeff;
+  osg::Matrix _mat;
+  ShapeObjectAttribute _extra;
 };
 
 struct rAndT

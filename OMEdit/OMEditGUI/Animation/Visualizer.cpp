@@ -302,23 +302,6 @@ std::string VisualizerAbstract::getModelFile() const
     return _baseData->getModelFile();
 }
 
-void VisualizerAbstract::startVisualization()
-{
-    if (_timeManager->getVisTime() < _timeManager->getEndTime() - 1.e-6)
-    {
-        _timeManager->setPause(false);
-    }
-    else
-        std::cout<<"There is nothing left to visualize. Initialize the model first."<<std::endl;
-}
-
-void VisualizerAbstract::pauseVisualization()
-{
-    _timeManager->setPause(true);
-}
-
-
-
 
 OMVisScene::OMVisScene()
         : _scene()

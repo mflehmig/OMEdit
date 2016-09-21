@@ -32,33 +32,50 @@
  * @author Volker Waurich <volker.waurich@tu-dresden.de>
  */
 
-#ifndef VISUALIZERMAT_H
-#define VISUALIZERMAT_H
+
+#ifndef VISUALIZERFMU_H
+#define VISUALIZERFMU_H
 
 #include "Visualizer.h"
+#include "FMUWrapper.h"
+#include "Shapes.h"
+#include "TimeManager.h"
+#include "InputData.h"
 
-
-class VisualizerMAT : public VisualizerAbstract
+class VisualizerFMU : public VisualizerAbstract
 {
  public:
-  VisualizerMAT() = delete;
-  VisualizerMAT(const std::string& fileName, const std::string& path);
-  virtual ~VisualizerMAT() = default;
-  VisualizerMAT(const VisualizerMAT& omvm) = delete;
-  VisualizerMAT& operator=(const VisualizerMAT& omvm) = delete;
-  void initData();
-  void initializeVisAttributes(const double time = -1.0);
-  void readMat(const std::string& modelFile, const std::string& path);
-  //void setSimulationSettings(const UserSimSettingsMAT& simSetMAT);
-  void simulate(TimeManager& omvm){ };
+  VisualizerFMU() = delete;
+  VisualizerFMU(const std::string& modelFile, const std::string& path);
+  virtual ~VisualizerFMU() = default;
+  VisualizerFMU(const VisualizerFMU& omvf) = delete;
+  VisualizerFMU& operator=(const VisualizerFMU& omvf) = delete;
+
+
+  void loadFMU(const std::string& modelFile, const std::string& path);
+  void initData() override;
+
+  void resetInputs();
+  void initJoySticks();
+  void initializeVisAttributes(const double time = 0.0) override;
+  //void setSimulationSettings(const UserSimSettingsFMU& simSetFMU);
+  const FMUWrapper* getFMU() const;
+  std::shared_ptr<InputData> getInputData() const;
+  fmi1_value_reference_t getVarReferencesForObjectAttribute(ShapeObjectAttribute* attr);
+  int setVarReferencesInVisAttributes();
+  void simulate(TimeManager& omvm) override;
+  double simulateStep(const double time);
   void updateVisAttributes(const double time) override;
-  void updateScene(const double time);
-  void updateObjectAttributeMAT(ShapeObjectAttribute* attr, double time, ModelicaMatReader* reader);
-  double omcGetVarValue(ModelicaMatReader* reader, const char* varName, double time);
+  void updateScene(const double time = 0.0) override;
+  void updateObjectAttributeFMU(ShapeObjectAttribute* attr, fmi1_import_t* fmu);
+
  private:
-  ModelicaMatReader _matReader;
+  std::shared_ptr<FMUWrapper> _fmu;
+  std::shared_ptr<SimSettingsFMU> _simSettings;
+  std::shared_ptr<InputData> _inputData;
+  //std::vector<Control::JoystickDevice*> _joysticks;
+
 };
 
 
-
-#endif // end VISUALIZERMAT_H
+#endif // end VISUALIZERFMU_H
