@@ -224,7 +224,10 @@ void FMUWrapper::initialize(const std::shared_ptr<SimSettingsFMU> simSettings)
   _fmuData._fmiStatus = fmi1_import_set_time(_fmu.get(), simSettings->getTstart());
   try
   {
+	std::cout<<"we come up to here"<<std::endl;
     _fmuData._fmiStatus = fmi1_import_initialize(_fmu.get(), simSettings->getToleranceControlled(), simSettings->getRelativeTolerance(), &_fmuData._eventInfo);
+	std::cout<<"the runtime error is fixed"<<std::endl;
+
   }
   catch (std::exception &ex)
   {
